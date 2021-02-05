@@ -10,21 +10,12 @@ import "C"
 
 import "gonum.org/v1/gonum/mat" 
 
+// !!drk modification:
+//  This file:
+//   1.  changed knnModel to KnnModel (2 changes)
+//   2.  changed  Knn to return *KnnModel rather than knnModel
 type KnnOptionalParam struct {
-    Algorithm string
-    Epsilon float64
-    InputModel *knnModel
-    K int
-    LeafSize int
-    Query *mat.Dense
-    RandomBasis bool
-    Reference *mat.Dense
-    Rho float64
-    Seed int
-    Tau float64
-    TreeType string
-    TrueDistances *mat.Dense
-    TrueNeighbors *mat.Dense
+	InputModel    *KnnModel // !!drk modification
     Verbose bool
 }
 
@@ -112,12 +103,8 @@ func KnnOptions() *KnnOptionalParam {
         here.
 
  */
-func Knn(param *KnnOptionalParam) (*mat.Dense, *mat.Dense, knnModel) {
-  resetTimers()
-  enableTimers()
-  disableBacktrace()
-  disableVerbose()
-  restoreSettings("k-Nearest-Neighbors Search")
+func Knn(param *KnnOptionalParam) (*mat.Dense, *mat.Dense, KnnModel) {
+	// !!drk modification:  changed return from knnModel to *KnnModel
 
   // Detect if the parameter was passed; set if so.
   if param.Algorithm != "dual_tree" {
@@ -223,8 +210,7 @@ func Knn(param *KnnOptionalParam) (*mat.Dense, *mat.Dense, knnModel) {
   distances := distancesPtr.armaToGonumMat("distances")
   var neighborsPtr mlpackArma
   neighbors := neighborsPtr.armaToGonumUmat("neighbors")
-  var outputModel knnModel
-  outputModel.getKNNModel("output_model")
+	var outputModel KnnModel // !!drk modification
 
   // Clear settings.
   clearSettings()

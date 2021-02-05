@@ -10,21 +10,29 @@ import "C"
 
 import "gonum.org/v1/gonum/mat" 
 
+// !!drk modification:
+//    1. changed hoeffdingTreeModel to HoeffdingTreeModel
+//    2. Made SapiensMatrixWithInfo to be exportable analogue to matrixWithInfo
+
+type SapiensMatrixWithInfo struct { // !!drk modification
+	Categoricals []bool
+	Data         *mat.Dense
+}
 type HoeffdingTreeOptionalParam struct {
     BatchMode bool
     Bins int
     Confidence float64
     InfoGain bool
-    InputModel *hoeffdingTreeModel
+	  InputModel                *HoeffdingTreeModel // !!drk modification
     Labels *mat.Dense
     MaxSamples int
     MinSamples int
     NumericSplitStrategy string
     ObservationsBeforeBinning int
     Passes int
-    Test *matrixWithInfo
+	  Test                      *SapiensMatrixWithInfo // !!drk modification
     TestLabels *mat.Dense
-    Training *matrixWithInfo
+	  Training                  *SapiensMatrixWithInfo // !!drk modification
     Verbose bool
 }
 
@@ -135,7 +143,8 @@ func HoeffdingTreeOptions() *HoeffdingTreeOptionalParam {
         rediction probabilities in this matrix.
 
  */
-func HoeffdingTree(param *HoeffdingTreeOptionalParam) (hoeffdingTreeModel, *mat.Dense, *mat.Dense) {
+func HoeffdingTree(param *HoeffdingTreeOptionalParam) (HoeffdingTreeModel, *mat.Dense, *mat.Dense) {
+	// !!drk modification:  changed return to HoeffdingTreeModel
   resetTimers()
   enableTimers()
   disableBacktrace()
@@ -210,7 +219,10 @@ func HoeffdingTree(param *HoeffdingTreeOptionalParam) (hoeffdingTreeModel, *mat.
 
   // Detect if the parameter was passed; set if so.
   if param.Test != nil {
-    gonumToArmaMatWithInfo("test", param.Test)
+		gonumToArmaMatWithInfo("test", &matrixWithInfo{ // !!drk modification
+			Categoricals: param.Test.Categoricals,
+			Data:         param.Test.Data,
+		})
     setPassed("test")
   }
 
@@ -222,7 +234,10 @@ func HoeffdingTree(param *HoeffdingTreeOptionalParam) (hoeffdingTreeModel, *mat.
 
   // Detect if the parameter was passed; set if so.
   if param.Training != nil {
-    gonumToArmaMatWithInfo("training", param.Training)
+		gonumToArmaMatWithInfo("training", &matrixWithInfo{ // !!drk modification
+			Categoricals: param.Training.Categoricals,
+			Data:         param.Training.Data,
+		})
     setPassed("training")
   }
 
@@ -242,7 +257,7 @@ func HoeffdingTree(param *HoeffdingTreeOptionalParam) (hoeffdingTreeModel, *mat.
   C.mlpackHoeffdingTree()
 
   // Initialize result variable and get output.
-  var outputModel hoeffdingTreeModel
+	var outputModel HoeffdingTreeModel // !!drk modification
   outputModel.getHoeffdingTreeModel("output_model")
   var predictionsPtr mlpackArma
   predictions := predictionsPtr.armaToGonumUrow("predictions")
