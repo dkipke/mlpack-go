@@ -229,23 +229,28 @@ func setHMMModel(identifier string, ptr *hmmModel) {
  C.mlpackSetHMMModelPtr(C.CString(identifier), (unsafe.Pointer)(ptr.mem))
 }
 
-type hoeffdingTreeModel struct {
-  mem unsafe.Pointer 
+// !!drk modifications start:
+//   this block:
+//    changed hoeffdingTreeModel to HoeffdingTreeModel
+//    changed mem to Mem
+type HoeffdingTreeModel struct {
+	Mem unsafe.Pointer
 }
 
-func (m *hoeffdingTreeModel) allocHoeffdingTreeModel(identifier string) {
-  m.mem = C.mlpackGetHoeffdingTreeModelPtr(C.CString(identifier))
-  runtime.KeepAlive(m)
+func (m *HoeffdingTreeModel) allocHoeffdingTreeModel(identifier string) {
+	m.Mem = C.mlpackGetHoeffdingTreeModelPtr(C.CString(identifier))
+	runtime.KeepAlive(m)
 }
 
-func (m *hoeffdingTreeModel) getHoeffdingTreeModel(identifier string) {
-  m.allocHoeffdingTreeModel(identifier)
+func (m *HoeffdingTreeModel) getHoeffdingTreeModel(identifier string) {
+	m.allocHoeffdingTreeModel(identifier)
 }
 
-func setHoeffdingTreeModel(identifier string, ptr *hoeffdingTreeModel) {
- C.mlpackSetHoeffdingTreeModelPtr(C.CString(identifier), (unsafe.Pointer)(ptr.mem))
+func setHoeffdingTreeModel(identifier string, ptr *HoeffdingTreeModel) {
+	C.mlpackSetHoeffdingTreeModelPtr(C.CString(identifier), (unsafe.Pointer)(ptr.Mem))
 }
 
+// !!drk modification end
 type kdeModel struct {
   mem unsafe.Pointer 
 }
@@ -382,23 +387,28 @@ func setNBCModel(identifier string, ptr *nbcModel) {
  C.mlpackSetNBCModelPtr(C.CString(identifier), (unsafe.Pointer)(ptr.mem))
 }
 
-type knnModel struct {
-  mem unsafe.Pointer 
+// !!drk modification start
+//  this block:
+//  	1. changed knnModel to KnnModel so that the struct is exported (4 changes)
+//  	2. changed mem to Mem so that the field is exported (3 changes)
+type KnnModel struct {
+	Mem unsafe.Pointer
 }
 
-func (m *knnModel) allocKNNModel(identifier string) {
-  m.mem = C.mlpackGetKNNModelPtr(C.CString(identifier))
-  runtime.KeepAlive(m)
+func (m *KnnModel) allocKNNModel(identifier string) {
+	m.Mem = C.mlpackGetKNNModelPtr(C.CString(identifier))
+	runtime.KeepAlive(m)
 }
 
-func (m *knnModel) getKNNModel(identifier string) {
-  m.allocKNNModel(identifier)
+func (m *KnnModel) getKNNModel(identifier string) {
+	m.allocKNNModel(identifier)
 }
 
-func setKNNModel(identifier string, ptr *knnModel) {
- C.mlpackSetKNNModelPtr(C.CString(identifier), (unsafe.Pointer)(ptr.mem))
+func setKNNModel(identifier string, ptr *KnnModel) {
+	C.mlpackSetKNNModelPtr(C.CString(identifier), (unsafe.Pointer)(ptr.Mem))
 }
 
+// !!drk modification end
 type kfnModel struct {
   mem unsafe.Pointer 
 }

@@ -10,10 +10,14 @@ import "C"
 
 import "gonum.org/v1/gonum/mat" 
 
+// !!drk modification:
+//  This file:
+//   1.  changed knnModel to KnnModel (2 changes)
+//   2.  changed  Knn to return *KnnModel rather than knnModel
 type KnnOptionalParam struct {
     Algorithm string
     Epsilon float64
-    InputModel *knnModel
+    InputModel *KnnModel // !!drk modification
     K int
     LeafSize int
     Query *mat.Dense
@@ -112,7 +116,8 @@ func KnnOptions() *KnnOptionalParam {
         here.
 
  */
-func Knn(param *KnnOptionalParam) (*mat.Dense, *mat.Dense, knnModel) {
+func Knn(param *KnnOptionalParam) (*mat.Dense, *mat.Dense, KnnModel) {
+	// !!drk modification:  changed return from knnModel to *KnnModel
   resetTimers()
   enableTimers()
   disableBacktrace()
@@ -223,7 +228,7 @@ func Knn(param *KnnOptionalParam) (*mat.Dense, *mat.Dense, knnModel) {
   distances := distancesPtr.armaToGonumMat("distances")
   var neighborsPtr mlpackArma
   neighbors := neighborsPtr.armaToGonumUmat("neighbors")
-  var outputModel knnModel
+	var outputModel KnnModel // !!drk modification
   outputModel.getKNNModel("output_model")
 
   // Clear settings.
